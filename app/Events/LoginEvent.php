@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,20 +11,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendNotification implements ShouldBroadcastNow
+class LoginEvent implements ShouldBroadcastNow
 {
     use InteractsWithSockets, SerializesModels;
-    public $notification;
-    public $user;
+    public $user_id;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($notification, User $user)
+    public function __construct($user_id)
     {
-        $this->notification = $notification;
-        $this->user = $user;
+        $this->user_id = $user_id;
     }
 
     /**
@@ -36,20 +33,18 @@ class SendNotification implements ShouldBroadcastNow
     public function broadcastOn()
     {
         // return new PrivateChannel('channel-name');
-        return new Channel('notification-channel');
+        return new Channel('login-channel');
     }
 
     public function broadcastAs()
     {
-        return 'NotificationEvent';
+        return 'LoginEvent';
     }
 
     public function broadcastWith()
     {
         return [
-            'user_id' => $this->user->id,
-            'name' => $this->user->name,
-            'notification' => $this->notification,
+            'user_id' => $this->user_id,
             'now' => date('Y-m-d H:i:s')
         ];
     }

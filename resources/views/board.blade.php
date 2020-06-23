@@ -1,25 +1,22 @@
-<!doctype html>
-<html lang="{{ app()->getLocale() }}">
+@extends('layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Laravel Broadcast Redis Socket io Tutorial</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-</head>
 
-<body>
-    <div class="container">
-        <h1>Laravel Broadcast Redis Socket io Tutorial</h1>
+@section('content')
+<div class="container">
+    <h1>Laravel Broadcast Redis Socket io</h1>
 
-        <div id="notification"></div>
+    <hr>
+    <div class="row stage">
     </div>
-</body>
 
+    <br>
+    <h1>Logs</h1>
+    <hr>
+    <div id="notification"></div>
+</div>
+@endsection
+
+@section('scripts')
 <script>
     window.laravel_echo_port='{{env("LARAVEL_ECHO_PORT")}}';
 </script>
@@ -32,8 +29,61 @@
          .listen('.NotificationEvent', (data) => {
              console.log('data :>> ', data);
             i++;
+            getCoundAlert(data.user_id);
             $("#notification").append('<div class="alert alert-success">'+data.now+' : '+data.notification+'=>'+data.name+'</div>');
         });
-</script>
 
-</html>
+        window.Echo.channel('login-channel')
+         .listen('.LoginEvent', (data) => {
+            userOnline();
+            $("#notification").append('<div class="alert alert-primary">'+data.now+' : '+data.user_id+'=> Login</div>');
+        });
+
+        window.Echo.channel('logout-channel')
+         .listen('.LogoutEvent', (data) => {
+            userOnline();
+            $("#notification").append('<div class="alert alert-warning">'+data.now+' : '+data.user_id+'=> Logout</div>');
+
+        });
+
+        window.onload = function () {
+            userOnline();
+        }
+
+        const getCoundAlert = (user_id) => {
+            $.get("{{ URL('alertall') }}/"+user_id,
+                function (data, textStatus, jqXHR) {
+                    // console.log('data :>> ', data);
+                    $('.alert_user_'+user_id).text(data.totals);
+                },
+                "json"
+            );
+        }
+
+        const userOnline = () => {
+            $('.stage').html('');
+            $.get("{{ URL('useronline') }}",
+                function (data, textStatus, jqXHR) {
+                    if (data.users) {
+                        $.each(data.users, function (indexInArray, valueOfElement) {
+                            getCoundAlert(valueOfElement.user_id);
+                            input = '';
+                            var item = $('<div>');
+                            item.attr("class", 'col-4');
+                            input = '<div class="card text-left">'
+                            input +='    <div class="card-body">'
+                            input +='        <h4 class="card-title text-primary">'+ valueOfElement.name +'</h4>'
+                            input +='        <p class="card-text"><span class="text-success">'+ valueOfElement.email +'</span></p>'
+                            input +='        <span style="font-size: 20px;" class="badge badge-danger alert_user_'+ valueOfElement.user_id +'"></span>'
+                            input +='    </div>'
+                            input +='</div>';
+                            item.append(input);
+                            $('.stage').append(item);
+                        });
+                    }
+                },
+                "json"
+            );
+        }
+</script>
+@endsection

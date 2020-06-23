@@ -17,12 +17,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/board', function () {
-    return view('board');
-});
-
-Route::get('/help', 'HelpController@help')->name('help');
-
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/help', 'HelpController@help')->name('help');
+
+Route::get('/board', 'BoardController@board')->name('board');
+Route::get('/useronline', 'BoardController@useronline')->name('useronline');
+Route::get('/alertall/{userID}', 'BoardController@alertall')->name('alertall');
+
+Auth::routes();
