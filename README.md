@@ -10,10 +10,10 @@
 - npm install laravel-echo socket.io-client         
   
 ## How
-php artisan make:event SendNotification
-php artisan make:event LoginEvent
-php artisan make:event LogoutEvent
-app/Providers/EventServiceProvider.php
+- php artisan make:event SendNotification
+- php artisan make:event LoginEvent
+- php artisan make:event LogoutEvent
+- app/Providers/EventServiceProvider.php
 
 `` protected $listen = [
         Registered::class => [
@@ -27,6 +27,6 @@ app/Providers/EventServiceProvider.php
         ],
     ];``
     
-php artisan event:generate
-php artisan session:table
-php artisan migrate
+- php artisan event:generate
+- php artisan session:table
+- php artisan migrate
