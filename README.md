@@ -15,18 +15,33 @@
 - php artisan make:event LogoutEvent
 - app/Providers/EventServiceProvider.php
 
-`` protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
-        'Illuminate\Auth\Events\Login' => [
-            'App\Listeners\LogSuccessfulLogin',
-        ],
-        'Illuminate\Auth\Events\Logout' => [
-            'App\Listeners\UserLoggedOut',
-        ],
-    ];``
+```
+protected $listen = [
+    Registered::class => [
+        SendEmailVerificationNotification::class,
+    ],
+    'Illuminate\Auth\Events\Login' => [
+        'App\Listeners\LogSuccessfulLogin',
+    ],
+    'Illuminate\Auth\Events\Logout' => [
+        'App\Listeners\UserLoggedOut',
+    ],
+];
+```
     
 - php artisan event:generate
 - php artisan session:table
+- php artisan make:model Help -m
+    ```
+    Schema::create('helps', function (Blueprint $table) {
+        $table->id();
+        $table->integer('user_id')->unsigned();
+        $table->string('message');
+        $table->integer('read');
+        $table->timestamps();
+    });
+    ```
 - php artisan migrate
+- php artisan make:controller HelpController
+- php artisan make:controller BoardController
+- resources/views/board.blade.php
