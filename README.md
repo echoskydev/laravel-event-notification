@@ -45,3 +45,7 @@ protected $listen = [
 - php artisan make:controller HelpController
 - php artisan make:controller BoardController
 - resources/views/board.blade.php
+
+# Runing
+- redis.io 
+- laravel-echo-server start
